@@ -37,7 +37,7 @@ const Yhteensa = (props) => {
 }
 
 const App = () => {
-  const kurssi = 'Half Stack -sovelluskehitys'
+  //const kurssi = 'Half Stack -sovelluskehitys'
   /*const osa1 = 'Reactin perusteet'
   const tehtavia1 = 10
   const osa2 = 'Tiedon välitys propseilla'
@@ -56,25 +56,28 @@ const App = () => {
     nimi: 'Komponenttien tila',
     tehtavia: 14
   }*/
-  const osat = [
-    {
-      nimi: 'Reactin perusteet',
-      tehtavia: 10
-    },
-    {
-      nimi: 'Tiedonvälitys propseilla',
-      tehtavia: 7
-    },
-    {
-      nimi: 'Komponenttien tila',
-      tehtavia: 14
-    }
-  ]
+  const kurssi = {
+    nimi: ' Half Stack -sovelluskehitys',
+    osat: [
+      {
+        nimi: 'Reactin perusteet',
+        tehtavia: 10
+      },
+      {
+        nimi: 'Tiedonvälitys propseilla',
+        tehtavia: 7
+      },
+      {
+        nimi: 'Komponenttien tila',
+        tehtavia: 14
+      }
+    ]
+  }
   return (
     <div>
-      <Otsikko kurssi={kurssi} />
-      <Sisalto osa1={osat[0]} osa2={osat[1]} osa3={osat[2]}/>
-      <Yhteensa tehtavia1={osat[0].tehtavia} tehtavia2={osat[1].tehtavia} tehtavia3={osat[2].tehtavia}/>
+      <Otsikko kurssi={kurssi.nimi} />
+      <Sisalto osa1={kurssi.osat[0]} osa2={kurssi.osat[1]} osa3={kurssi.osat[2]}/>
+      <Yhteensa tehtavia1={kurssi.osat[0].tehtavia} tehtavia2={kurssi.osat[1].tehtavia} tehtavia3={kurssi.osat[2].tehtavia}/>
     </div>
   )
 }

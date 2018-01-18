@@ -12,7 +12,7 @@ class App extends React.Component {
     this.heading = 'Anna palautetta'
     this.statistics = 'Statistiikka'
   }
-  /*No eihän tää hirveen siisti oo mut on tää yhdessä handlerissa koko potti 10.6 */
+  /*No eihän tää hirveen siisti ole, mutta on tämä yhdessä handlerissa koko potti 1.10 */
   Click = option => {
     //console.log(option ,this.state[option])
     if (option === "good") {
@@ -36,7 +36,7 @@ class App extends React.Component {
     }
   }
 
-// On niikuin statistics mut on vaan numbers
+// On niikuin statistics mut on vaan numbers 1.8
   Numbers = () => {
     let sum = this.state.good + this.state.neutral + this.state.bad
     console.log('summa', sum)
@@ -48,6 +48,7 @@ class App extends React.Component {
       )
     }
     return(
+      // 1.11
       <table>
         <tbody>
           <this.Statistic text="hyvä" value={this.state.good} />
@@ -59,6 +60,7 @@ class App extends React.Component {
       </table>
     )
   }
+  //1.8
   Statistic = (props) => {
     return(
       <tr>
@@ -69,12 +71,13 @@ class App extends React.Component {
     )
   }
 
+// 1.8
   Button = (props) => {
     return (
         <button onClick={props.f}> {props.text} </button>
     )
   }
-
+//1.7
   Average = () => {
     const positive = this.state.good
     const neutral = this.state.neutral
@@ -87,6 +90,7 @@ class App extends React.Component {
     let avg = score/all
     return Math.round((avg)*100)/100
   }
+  //1.7
   Positivity = () => {
     let all = this.state.good + this.state.neutral + this.state.bad
     if (all === 0) {

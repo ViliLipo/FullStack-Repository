@@ -39,7 +39,7 @@ class App extends React.Component {
 // On niikuin statistics mut on vaan numbers 1.8
   Numbers = () => {
     let sum = this.state.good + this.state.neutral + this.state.bad
-    console.log('summa', sum)
+    //console.log('summa', sum)
     if(sum === 0) {
       return (
         <div>

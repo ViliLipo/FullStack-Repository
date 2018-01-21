@@ -22,7 +22,7 @@ class App extends React.Component {
   }
 
   nextClick = () => {
-    const i = Math.floor(Math.random() * 6)
+    const i = Math.floor(Math.random() * this.state.score.length)
     console.log("Random number is ", i)
     this.setState({
       selected: i
@@ -49,13 +49,20 @@ class App extends React.Component {
     }
     return canditate
   }
+  Anectdote = (props) => {
+    return (
+      <div>
+        {this.props.anecdotes[props.selected]}
+      </div>
+    )
+  }
 
   BestAnectdote = () => {
     let max = this.findMax()
     return (
       <div>
         <h2> Anectdote with most votes : </h2>
-        {this.props.anecdotes[max]}
+        <this.Anectdote selected={max}/>
         <p> has {this.state.score[max]} votes </p>
       </div>
     )
@@ -65,10 +72,8 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {this.props.anecdotes[this.state.selected]}
-        <div>
-          <p> has {this.state.score[this.state.selected]} points </p>
-        </div>
+        <this.Anectdote selected={this.state.selected}/>
+        <p> has {this.state.score[this.state.selected]} votes </p>
         <div>
           <this.Button f={this.nextClick} text="Next anectdote" />
           <this.Button f={this.voteClick} text="Vote" />

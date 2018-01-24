@@ -28,30 +28,30 @@ class App extends React.Component {
   }
 
   Numbers = (props) => {
-    const rows = () => props.list.map(person => <this.Number key={person.name} person={person}/>)
+    const rows =
+      this.state.searchTerm === '' ?
+        props.list.map(person => <this.Number key={person.name} person={person}/>):
+        props.list.filter(person => person.name.toLowerCase().search(this.state.searchTerm.toLowerCase()) !== -1).map(
+          person => <this.Number key={person.name} person={person} />
+        )
     return (
       <div>
         <h2>Numerot</h2>
         <table>
           <tbody>
-            {rows()}
+            {rows}
           </tbody>
         </table>
       </div>
     )
   }
   Number = (props) => {
-    const name = props.person.name.toLowerCase()
-    const searchTerm = this.state.searchTerm.toLowerCase()
-    if (searchTerm === '' || name.search(searchTerm) !== -1) {
-      return(
-          <tr>
-            <td>{props.person.name}</td><td> {props.person.number}</td>
-          </tr>
-      )
-    } else {
-      return null
-    }
+    return(
+        <tr>
+          <td>{props.person.name}</td><td> {props.person.number}</td>
+        </tr>
+    )
+
   }
 
   LimitView = () => {

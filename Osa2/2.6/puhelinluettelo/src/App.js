@@ -80,32 +80,6 @@ class App extends React.Component {
     )
   }
 
-  LimitView = () => {
-    return(
-      <div>
-        rajaa näytettäviä: <input value={this.state.searchTerm}
-        onChange={(e) => this.handleChange(e, "searchTerm")} />
-      </div>
-    )
-  }
-
-  NameField = () => {
-    return(
-      <div>
-        nimi: <input value={this.state.newName}
-        onChange={(e) => this.handleChange(e, "newName")} />
-      </div>
-    )
-  }
-
-  NumberField = () => {
-    return(
-      <div>
-        numero: <input value={this.state.newNumber}
-        onChange={(e) => this.handleChange(e, "newNumber")} />
-      </div>
-    )
-  }
   Field = (props) => {
     return(
       <div>
@@ -135,7 +109,7 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
-        <this.LimitView />
+        <this.Field text="rajaa näytettäviä" i={this.state.searchTerm} type="searchTerm" />
         <this.Form />
         <this.Numbers list={this.state.persons} />
       </div>

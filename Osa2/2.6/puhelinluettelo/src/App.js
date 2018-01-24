@@ -16,73 +16,11 @@ class App extends React.Component {
     }
   }
 
-  handleNameChange = (event) => {
-    this.setState({newName: event.target.value})
+  handleChange = (event, type) => {
+    //console.log("heii",type)
+    this.setState({[type]: event.target.value})
   }
 
-  handleNumberChange = (event) => {
-    this.setState({newNumber: event.target.value})
-  }
-  handleSearchTermChange = (event) => {
-    this.setState({searchTerm: event.target.value})
-  }
-
-  Numbers = (props) => {
-    const rows =
-      this.state.searchTerm === '' ?
-        props.list.map(person => <this.Number key={person.name} person={person}/>):
-        props.list.filter(person => person.name.toLowerCase().search(this.state.searchTerm.toLowerCase()) !== -1).map(
-          person => <this.Number key={person.name} person={person} />
-        )
-    return (
-      <div>
-        <h2>Numerot</h2>
-        <table>
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-  Number = (props) => {
-    return(
-        <tr>
-          <td>{props.person.name}</td><td> {props.person.number}</td>
-        </tr>
-    )
-
-  }
-
-  LimitView = () => {
-    return(
-      <div>
-        rajaa näytettäviä: <input value={this.state.searchTerm}
-        onChange={this.handleSearchTermChange} />
-      </div>
-    )
-  }
-
-  Form = (props) => {
-    return (
-      <div>
-        <h2> Lisää numero </h2>
-        <form onSubmit={this.addPerson} >
-          <div>
-            nimi: <input value={this.state.newName}
-            onChange={this.handleNameChange} />
-          </div>
-          <div>
-            numero: <input value={this.state.newNumber}
-            onChange={this.handleNumberChange} />
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
-      </div>
-    )
-  }
 
   addPerson = (event) => {
     event.preventDefault()
@@ -90,6 +28,10 @@ class App extends React.Component {
     console.log(event.target)
     let name = this.state.newName
     let number = this.state.newNumber
+    if(name ==='' || number === '') {
+      console.log("älä lisää tyhjää")
+      return
+    }
     //console.log(this.state.persons.indexOf(name))
     let persons = ""
     const names = this.state.persons.map(person => person.name )
@@ -110,6 +52,84 @@ class App extends React.Component {
     })
 
   }
+
+  Numbers = (props) => {
+    const rows =
+      this.state.searchTerm === '' ?
+        props.list.map(person => <this.Number key={person.name} person={person}/>):
+        props.list.filter(person => person.name.toLowerCase().search(this.state.searchTerm.toLowerCase()) !== -1).map(
+          person => <this.Number key={person.name} person={person} />
+        )
+    return (
+      <div>
+        <h2>Numerot</h2>
+        <table>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  Number = (props) => {
+    return(
+        <tr>
+          <td>{props.person.name}</td><td> {props.person.number}</td>
+        </tr>
+    )
+  }
+
+  LimitView = () => {
+    return(
+      <div>
+        rajaa näytettäviä: <input value={this.state.searchTerm}
+        onChange={(e) => this.handleChange(e, "searchTerm")} />
+      </div>
+    )
+  }
+
+  NameField = () => {
+    return(
+      <div>
+        nimi: <input value={this.state.newName}
+        onChange={(e) => this.handleChange(e, "newName")} />
+      </div>
+    )
+  }
+
+  NumberField = () => {
+    return(
+      <div>
+        numero: <input value={this.state.newNumber}
+        onChange={(e) => this.handleChange(e, "newNumber")} />
+      </div>
+    )
+  }
+  Field = (props) => {
+    return(
+      <div>
+        {props.text} : <input value={props.i}
+        onChange={(e) => this.handleChange(e, props.type)} />
+      </div>
+    )
+  }
+
+  Form = (props) => {
+    return (
+      <div>
+        <h2> Lisää numero </h2>
+        <form onSubmit={this.addPerson} >
+          <this.Field text="nimi" i={this.state.newName} type="newName" />
+          <this.Field text="numero" i={this.state.newNumber} type="newNumber" />
+          <div>
+            <button type="submit">lisää</button>
+          </div>
+        </form>
+      </div>
+    )
+  }
+
 
   render() {
     return (

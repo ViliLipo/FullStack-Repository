@@ -21,7 +21,6 @@ class App extends React.Component {
     this.setState({[type]: event.target.value})
   }
 
-
   addPerson = (event) => {
     event.preventDefault()
     console.log('nappula')
@@ -61,14 +60,14 @@ class App extends React.Component {
           person => <this.Number key={person.name} person={person} />
         )
     return (
-      <div>
-        <h2>Numerot</h2>
-        <table>
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-      </div>
+            <div>
+              <h2>Numerot</h2>
+              <table>
+                <tbody>
+                  {rows}
+                </tbody>
+              </table>
+            </div>
     )
   }
 
@@ -103,7 +102,6 @@ class App extends React.Component {
       </div>
     )
   }
-
 
   render() {
     return (

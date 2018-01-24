@@ -18,6 +18,7 @@ class App extends React.Component {
 
   handleChange = (event, type) => {
     //console.log("heii",type)
+    event.preventDefault()
     this.setState({[type]: event.target.value})
   }
 

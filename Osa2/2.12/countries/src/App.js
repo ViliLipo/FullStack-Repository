@@ -33,7 +33,8 @@ class App extends React.Component {
   handleClick = (event, country) => {
     event.preventDefault()
     //console.log(event.target)
-    this.setState({highLighted: country})
+    this.setState({highLighted: country,
+                    filter: ''})
   }
   Field = (props) => {
     return(
@@ -57,15 +58,15 @@ class App extends React.Component {
   }
 
   Countries = () => {
+    if(this.state.highLighted !== '') {
+      return (
+        <this.DetailedCountry country={this.state.highLighted} />
+      )
+    }
     if (this.state.filter === "") {
       //console.log("filter")
       return(
         <p> too many matches, specify </p>
-      )
-    }
-    if(this.state.highLighted !== '') {
-      return (
-        <this.DetailedCountry country={this.state.highLighted} />
       )
     }
     const rows = this.state.countries.filter(country => country.name.toLowerCase().search(this.state.filter.toLowerCase()) !== -1)
@@ -102,11 +103,15 @@ class App extends React.Component {
   }
   DetailedCountry = (props) => {
     return(
-      <div>
+      <div className="App-DetailedCountry">
         <h2> {props.country.name} </h2>
         <p> capital: {props.country.capital} </p>
         <p> population : {props.country.population} </p>
         <img src={props.country.flag}  height="100" width="200" alt="flag"/>
+        <div>
+        <button onClick={(e) => this.handleClick(e,'')}>
+        back</button>
+        </div>
       </div>
     )
 

@@ -1,19 +1,26 @@
 import React from 'react';
-
+import personService from './services/persons'
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       persons: [
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Martti Tienari', number: '040-123456' },
-        { name: 'Arto Järvinen', number: '040-123456' },
-        { name: 'Lea Kutvonen', number: '040-123456' }
+        { name: 'null', number: 'nill' },
       ],
       newName: '',
       newNumber: '',
-      searchTerm:''
+      searchTerm:'',
+      message: null
     }
+  }
+
+  componentWillMount() {
+    personService.getAll()
+      .then(response => {
+        console.log("promise fulfilled")
+        this.setState({persons: response.data})
+      })
+
   }
 
   handleChange = (event, type) => {
@@ -24,8 +31,7 @@ class App extends React.Component {
 
   addPerson = (event) => {
     event.preventDefault()
-    console.log('nappula')
-    console.log(event.target)
+    //console.log('nappula')
     let name = this.state.newName
     let number = this.state.newNumber
     if(name ==='' || number === '') {
@@ -35,22 +41,70 @@ class App extends React.Component {
     //console.log(this.state.persons.indexOf(name))
     let persons = ""
     const names = this.state.persons.map(person => person.name )
-    if(names.indexOf(name) === -1) {
-      let personObject = {
-        name,
-        number
-      }
-      persons = this.state.persons.concat(personObject)
-    }else {
-      persons = this.state.persons
-      console.log("lisättiin sama nimi uudestaan")
+    let personObject = {
+      name,
+      number
     }
-    this.setState({
-      persons,
-      newName : '',
-      newNumber: ''
-    })
+    if(names.indexOf(name) === -1) {
+      personService.create(personObject).then(response => {
+        console.log(response.data)
+        personObject = response.data
+        this.setState({
+                persons : this.state.persons.concat(personObject),
+                newName : '',
+                newNumber: '',
+                message: `Lisättiin ${personObject.name} onnistuneesti.`
+              })
+      })
+    }else {
+      if(window.confirm(`${name} on jo luettelossa korvataanko vanha numero uudella`)) {
+        persons = this.state.persons.slice()
+        //console.log(persons)
+        var index = names.indexOf(name)
+        persons[index] = {
+          name,
+          number,
+          id : this.state.persons[index].id
+        }
+        this.setState({
+          persons,
+          newName: '',
+          newNumber: '',
+          message: `Henkilon ${persons[index].name} numero on päivitetty.`
+        })
+        personService.update(this.state.persons[index].id, this.state.persons[index]).then(response => {
+          console.log('succes!', response)
+        }).catch(error => {
+          console.log('fail')
+          personService.create(persons[index]).then(response => {
+            console.log('Hlo lisättiin uudelleen')
+          })
+        })
+      }
+      //console.log("lisättiin sama nimi uudestaan")
+    }
+    setTimeout(() => {
+      this.setState({message:null})
+    }, 5000)
+  }
 
+  removePerson = (e, personObject) => {
+    //console.log(e)
+    if(window.confirm(`Oletko varma, että haluat poistaa yhteystiedon ${personObject.name}?`)) {
+      var persons = this.state.persons.slice()
+      const index = persons.indexOf(personObject)
+      persons.splice(index, 1)
+      personService.remove(personObject.id).then(response => {
+        console.log(response)
+        this.setState({message: `Poistettiin ${personObject.name} onnistuneesti.`,
+                      persons,
+        })
+      })
+
+      setTimeout(() => {
+        this.setState({message:null})
+      }, 5000)
+    }
   }
 
   Numbers = (props) => {
@@ -75,7 +129,11 @@ class App extends React.Component {
   Number = (props) => {
     return(
         <tr>
-          <td>{props.person.name}</td><td> {props.person.number}</td>
+          <td>{props.person.name}</td>
+          <td> {props.person.number}</td>
+          <td>
+            <button onClick={(e) => this.removePerson(e, props.person)}> poista</button>
+          </td>
         </tr>
     )
   }
@@ -93,7 +151,7 @@ class App extends React.Component {
     return (
       <div>
         <h2> Lisää numero </h2>
-        <form onSubmit={this.addPerson} >
+        <form onSubmit={this.addPerson.bind(this)} >
           <this.Field text="nimi" i={this.state.newName} type="newName" />
           <this.Field text="numero" i={this.state.newNumber} type="newNumber" />
           <div>
@@ -103,10 +161,21 @@ class App extends React.Component {
       </div>
     )
   }
+  Notification = ({ message }) => {
+    if(message === null) {
+      return null
+    }
+    return (
+      <div className="notification">
+        {message}
+      </div>
+    )
+  }
 
   render() {
     return (
       <div>
+        <this.Notification message={this.state.message}/>
         <h2>Puhelinluettelo</h2>
         <this.Field text="rajaa näytettäviä" i={this.state.searchTerm} type="searchTerm" />
         <this.Form />

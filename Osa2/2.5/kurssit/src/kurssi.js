@@ -1,5 +1,6 @@
 import React from 'react';
 
+//2.5
 const Kurssi = (props) => {
   return (
     <div>
@@ -36,6 +37,7 @@ const Sisalto = (props) => {
 
 }
 const Yhteensa = (props) => {
+  // 2.3
   let sum = props.osat.map(osa => osa.tehtavia).reduce((a,b) => a + b, 0)
   return (
     <div>

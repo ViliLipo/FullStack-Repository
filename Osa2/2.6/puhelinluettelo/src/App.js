@@ -15,6 +15,7 @@ class App extends React.Component {
   }
 
   componentWillMount() {
+    //2.11
     personService.getAll()
       .then(response => {
         console.log("promise fulfilled")
@@ -46,6 +47,7 @@ class App extends React.Component {
       number
     }
     if(names.indexOf(name) === -1) {
+      //2.14
       personService.create(personObject).then(response => {
         console.log(response.data)
         personObject = response.data
@@ -57,6 +59,7 @@ class App extends React.Component {
               })
       })
     }else {
+      //2.7, 2.17,
       if(window.confirm(`${name} on jo luettelossa korvataanko vanha numero uudella`)) {
         persons = this.state.persons.slice()
         //console.log(persons)
@@ -72,6 +75,7 @@ class App extends React.Component {
           newNumber: '',
           message: `Henkilon ${persons[index].name} numero on päivitetty.`
         })
+        //2.19
         personService.update(this.state.persons[index].id, this.state.persons[index]).then(response => {
           console.log('succes!', response)
         }).catch(error => {
@@ -90,6 +94,7 @@ class App extends React.Component {
 
   removePerson = (e, personObject) => {
     //console.log(e)
+    //2.16
     if(window.confirm(`Oletko varma, että haluat poistaa yhteystiedon ${personObject.name}?`)) {
       var persons = this.state.persons.slice()
       const index = persons.indexOf(personObject)
@@ -108,6 +113,7 @@ class App extends React.Component {
   }
 
   Numbers = (props) => {
+    //2.9
     const rows =
       this.state.searchTerm === '' ?
         props.list.map(person => <this.Number key={person.name} person={person}/>):

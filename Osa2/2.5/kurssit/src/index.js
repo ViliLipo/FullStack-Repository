@@ -46,6 +46,7 @@ const App = () => {
       ]
     }
   ]
+  //2.4
   const rivit = () => kurssit.map( kurssi => <Kurssi key={kurssi.id} kurssi={kurssi}/>)
   return (
     <div>

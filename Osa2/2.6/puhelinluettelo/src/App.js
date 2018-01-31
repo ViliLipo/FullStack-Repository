@@ -74,16 +74,18 @@ class App extends React.Component {
           newName: '',
           newNumber: '',
           message: `Henkilon ${persons[index].name} numero on päivitetty.`
-        })
-        //2.19
-        personService.update(this.state.persons[index].id, this.state.persons[index]).then(response => {
-          console.log('succes!', response)
-        }).catch(error => {
-          console.log('fail')
-          personService.create(persons[index]).then(response => {
-            console.log('Hlo lisättiin uudelleen')
+        }, () => {
+          console.log(this.state.persons[index])
+          personService.update(this.state.persons[index].id, this.state.persons[index]).then(response => {
+            console.log('succes!', response)
+          }).catch(error => {
+            console.log('fail')
+            personService.create(persons[index]).then(response => {
+              console.log('Hlo lisättiin uudelleen')
+            })
           })
         })
+        //2.19
       }
       //console.log("lisättiin sama nimi uudestaan")
     }
@@ -99,6 +101,7 @@ class App extends React.Component {
       var persons = this.state.persons.slice()
       const index = persons.indexOf(personObject)
       persons.splice(index, 1)
+      console.log(personObject)
       personService.remove(personObject.id).then(response => {
         console.log(response)
         this.setState({message: `Poistettiin ${personObject.name} onnistuneesti.`,

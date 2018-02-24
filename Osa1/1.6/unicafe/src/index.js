@@ -102,6 +102,8 @@ class App extends React.Component {
   }
 
   render() {
+    const state = store.getState()
+    console.log(state)
     return(
       <div>
         <h1> {this.heading} </h1>

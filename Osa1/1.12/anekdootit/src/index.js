@@ -1,59 +1,87 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {createStore} from 'redux'
+
+
+const anectdotes = [
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil.',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+]
+const getId = () => (10000*Math.random()).toFixed(0)
+const initialState = () => {
+  let i = 0
+  let table = []
+  for(i = 0; i < anectdotes.length; i++) {
+    table.push({content:anectdotes[i], votes:0, id:getId()})
+  }
+  return {
+    selected: table[0],
+    anectdotes: table
+  }
+}
+
+const voteReducer = (state=initialState(), action) => {
+  let tempstate = Object.assign({}, state)
+  switch(action.type) {
+    case 'NEXT':
+      tempstate.selected = tempstate.anectdotes[Math.floor(Math.random() * state.anectdotes.length)]
+      //console.log(tempstate.selected)
+      break
+    case 'VOTE':
+      //console.log(action)
+      const findId =(a) => {
+        return a.id === action.target.id
+      }
+      let anec = tempstate.anectdotes.find(findId)
+      anec.votes += 1
+      const comparator = (a, b) => {
+        if (a.votes > b.votes) {
+          return 1
+        }else if ( a.votes  < b.votes) {
+          return -1
+        } else if ( a.votes === b.votes) {
+          return 0
+        }
+      }
+      tempstate.anectdotes = tempstate.anectdotes.sort(comparator).reverse()
+      break
+    default:
+      break
+  }
+  return tempstate
+}
+
+const store = createStore(voteReducer)
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
-    let table = []
-    var i =  0
-    for(i = 0; i < this.props.anecdotes.length; i++) {
-      table.push(0)
-    }
-    this.state = {
-      selected: 0,
-      score: table
-    }
-  }
 
-  Button = (props) => {
-    return (
-        <button onClick={props.f}> {props.text} </button>
-    )
-  }
 
-  nextClick = () => {
-    const i = Math.floor(Math.random() * this.state.score.length)
-    console.log("Random number is ", i)
-    this.setState({
-      selected: i
-    })
-  }
-  voteClick = () => {
-    let table = this.state.score
-    table[this.state.selected] = table[this.state.selected] +1
-    this.setState( {
-      score: table
-    })
-  }
   findMax = () => {
-    let maxValue = -10000
-    let canditate = 0
-    let i = 0
-    for(i = 0; i < this.state.score.length; i++) {
-      console.log(i)
-      if (this.state.score[i] > maxValue) {
-        maxValue = this.state.score[i]
-        canditate = i
+    const state = store.getState()
+    const maxreducer = (a,b) => {
+      if (a.votes > b.votes) {
+        return a
+      } else {
+        return b
       }
-
     }
-    return canditate
+    return state.anectdotes.reduce(maxreducer, state.anectdotes[0])
   }
   Anectdote = (props) => {
     return (
       <div>
-        {this.props.anecdotes[props.selected]}
-      </div>
+        <div>
+          {props.anectdote.content}
+        </div>
+        <div>
+          has {props.anectdote.votes} votes
+          <button onClick={e => store.dispatch({type:'VOTE', target:props.anectdote})}> Vote </button>
+        </div>
+    </div>
     )
   }
 
@@ -62,36 +90,30 @@ class App extends React.Component {
     return (
       <div>
         <h2> Anectdote with most votes : </h2>
-        <this.Anectdote selected={max}/>
-        <p> has {this.state.score[max]} votes </p>
+        <this.Anectdote anectdote={max}/>
       </div>
     )
   }
 
 
   render() {
+    const state = store.getState()
+    //console.log(state)
     return (
       <div>
-        <this.Anectdote selected={this.state.selected}/>
-        <p> has {this.state.score[this.state.selected]} votes </p>
-        <div>
-          <this.Button f={this.nextClick} text="Next anectdote" />
-          <this.Button f={this.voteClick} text="Vote" />
-        </div>
-        <this.BestAnectdote />
+        <h1> Anectdotes </h1>
+        {state.anectdotes.map(anectdote =>
+        <this.Anectdote anectdote={anectdote} key={anectdote.id}/>)
+      }
       </div>
     )
   }
 }
-const anecdotes = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
 
 
 
-ReactDOM.render(<App anecdotes={anecdotes}/>, document.getElementById('root'));
+const renderApp = () => {
+  ReactDOM.render(<App anectdotes={anectdotes}/>, document.getElementById('root'));
+}
+renderApp()
+store.subscribe(renderApp)

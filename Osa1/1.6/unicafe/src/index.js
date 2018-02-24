@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {createStore} from 'redux'
+import counterReducer from './counterReducer'
+
+const store = createStore(counterReducer)
 
 class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      good: 0,
-      neutral: 0,
-      bad: 0
-    }
     this.heading = 'Anna palautetta'
     this.statistics = 'Statistiikka'
   }
@@ -38,8 +37,9 @@ class App extends React.Component {
 
 // On niikuin statistics mut on vaan numbers 1.8
   Numbers = () => {
-    let sum = this.state.good + this.state.neutral + this.state.bad
-    //console.log('summa', sum)
+    const state = store.getState()
+    let sum = state.good + state.ok + state.bad
+    console.log('summa', sum)
     if(sum === 0) {
       return (
         <div>
@@ -51,9 +51,9 @@ class App extends React.Component {
       // 1.11
       <table>
         <tbody>
-          <this.Statistic text="hyvä" value={this.state.good} />
-          <this.Statistic text="neutraali" value={this.state.neutral} />
-          <this.Statistic text="huono" value={this.state.bad} />
+          <this.Statistic text="hyvä" value={state.good} />
+          <this.Statistic text="neutraali" value={state.ok} />
+          <this.Statistic text="huono" value={state.bad} />
           <this.Statistic text="keskiarvo" value={this.Average()} />
           <this.Statistic text="positiivisia" value={this.Positivity()} special="%" />
         </tbody>
@@ -79,9 +79,10 @@ class App extends React.Component {
   }
 //1.7
   Average = () => {
-    const positive = this.state.good
-    const neutral = this.state.neutral
-    const negative = this.state.bad
+    const state = store.getState()
+    const positive = state.good
+    const neutral = state.ok
+    const negative = state.bad
     let all = positive + neutral + negative
     if (all === 0) {
       return 0
@@ -92,20 +93,21 @@ class App extends React.Component {
   }
   //1.7
   Positivity = () => {
-    let all = this.state.good + this.state.neutral + this.state.bad
+    const state = store.getState()
+    let all = state.good + state.ok + state.bad
     if (all === 0) {
       return 0
     }
-    return Math.round((this.state.good/all)*100)
+    return Math.round((state.good/all)*100)
   }
 
   render() {
     return(
       <div>
         <h1> {this.heading} </h1>
-        <this.Button f={this.Click("good")} text="hyvä"/>
-        <this.Button f={this.Click("neutral")} text="neutraali"/>
-        <this.Button f={this.Click("bad")} text="huono"/>
+        <this.Button f={e => store.dispatch({type:'GOOD'})} text="hyvä"/>
+        <this.Button f={e => store.dispatch({type:'OK'})} text="neutraali"/>
+        <this.Button f={e => store.dispatch({type:'BAD'})} text="huono"/>
         <h2> {this.statistics} </h2>
         < this.Numbers />
       </div>
@@ -114,4 +116,8 @@ class App extends React.Component {
 }
 
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const renderApp = () => {
+  ReactDOM.render(<App />, document.getElementById('root'));
+}
+renderApp()
+store.subscribe(renderApp)

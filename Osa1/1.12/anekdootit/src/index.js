@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {createStore} from 'redux'
-
+import AddForm from './AddForm'
 
 const anectdotes = [
   'If it hurts, do it more often',
@@ -20,15 +20,27 @@ const initialState = () => {
   }
   return {
     selected: table[0],
-    anectdotes: table
+    anectdotes: table,
+    newContent: ''
   }
 }
 
 const voteReducer = (state=initialState(), action) => {
   let tempstate = Object.assign({}, state)
   switch(action.type) {
-    case 'NEXT':
-      tempstate.selected = tempstate.anectdotes[Math.floor(Math.random() * state.anectdotes.length)]
+    case 'INPUT':
+      tempstate.newContent = action.text
+      break
+    case 'ADD':
+      if(tempstate.newContent !== '') {
+        let anec = {
+          content:tempstate.newContent,
+          votes: 0,
+          id: getId()
+        }
+        tempstate.anectdotes = tempstate.anectdotes.concat(anec)
+        tempstate.newContent = ''
+      }
       //console.log(tempstate.selected)
       break
     case 'VOTE':
@@ -105,6 +117,7 @@ class App extends React.Component {
         {state.anectdotes.map(anectdote =>
         <this.Anectdote anectdote={anectdote} key={anectdote.id}/>)
       }
+      <AddForm store={store} />
       </div>
     )
   }
